@@ -36,23 +36,23 @@ function completeToDo(index) {
 
 <template>
   <div class="mainToDo" v-if="isVisible">
-    <div>
-      <input v-model="newToDo" placeholder="Enter your ToDo" />
-      <button @click="addToDo">Add ToDo</button>
+    <div class="input-section">
+      <input class="input-ToDo" v-model="newToDo" placeholder="Enter your ToDo" />
+      <button class="addToDo-button" @click="addToDo">Add ToDo</button>
     </div>
     <div>
-      <h1>In Progress:</h1>
+      <h1 class="ToDo-Header">In Progress:</h1>
       <ul>
-        <li v-for="(todo, index) in todosInProgress" :key="index">
+        <li class="ToDoList" v-for="(todo, index) in todosInProgress" :key="index">
           {{ todo }}
-          <button @click="removeToDo(index)">Delete</button>
-          <button @click="editeToDo(index)">Edite</button>
-          <button @click="completeToDo(index)">Complete</button>
+          <button class="ToDoButton" @click="removeToDo(index)">Delete</button>
+          <button class="ToDoButton" @click="editeToDo(index)">Edite</button>
+          <button class="ToDoButton" @click="completeToDo(index)">Complete</button>
         </li>
       </ul>
-      <h1>Completed:</h1>
+      <h1 class="ToDo-Header">Completed:</h1>
       <ul>
-        <li v-for="(todo, index) in todosCompleted" :key="index">
+        <li class="ToDoList" v-for="(todo, index) in todosCompleted" :key="index">
           {{ todo }}
         </li>
       </ul>
@@ -67,12 +67,93 @@ function completeToDo(index) {
 </template>
 
 <style>
-.li {
-  color: antiquewhite;
+.ToDoList {
+  color: rgb(255, 255, 255);
+}
+
+.ToDo-Header {
+  margin-left: 8px;
+  margin-top: 8px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  background-color: rgb(208, 172, 219);
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: 12px;
+  font-weight: bold;
+  color: rgb(129, 143, 132);
 }
 
 .mainToDo {
   display: flex;
+  background-color: rgb(43, 35, 59);
+  border-radius: 12px;
+}
+
+.input-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-ToDo {
+  margin-left: 8px;
+  margin-top: 8px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  border: none;
+  padding-left: 20px;
+}
+
+.addToDo-button {
+  margin-left: 8px;
+  margin-top: 8px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  width: 100px;
+  height: 35px;
+  border-radius: 12px;
+  background-color: rgb(208, 172, 219);
+  border: none;
+  color: white;
+  font-weight: bold;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+}
+
+.ToDoButton {
+  margin-left: 2px;
+  margin-right: 2px;
+  border-radius: 12px;
+  background-color: rgb(208, 172, 219);
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
 }
 
 .editToDo {
