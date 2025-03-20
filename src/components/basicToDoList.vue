@@ -1,77 +1,79 @@
 <script setup>
 import { ref } from 'vue'
 
-const todosInProgress = ref([])
+const toDosInProgress = ref([])
 const todosCompleted = ref([])
 const newToDo = ref('')
-const ToDo_Index_ForEditing = ref(0) //Do I really need this?
-const ToDo_Text_ForEditing = ref('')
+const toDoIndexForEditing = ref(0) //Do I really need this?
+const toDoTextForEditing = ref('')
 const isVisible = ref(true)
 
 function addToDo() {
-  todosInProgress.value.push(newToDo.value)
+  toDosInProgress.value.push(newToDo.value)
   newToDo.value = ''
 }
 
 function removeToDo(index) {
-  todosInProgress.value.splice(index, 1)
+  toDosInProgress.value.splice(index, 1)
 }
 
 function editeToDo(index) {
   isVisible.value = !isVisible.value
-  ToDo_Index_ForEditing.value = index
-  ToDo_Text_ForEditing.value = todosInProgress.value.at(ToDo_Index_ForEditing.value)
+  toDoIndexForEditing.value = index
+  toDoTextForEditing.value = toDosInProgress.value.at(toDoIndexForEditing.value)
 }
 
 function saveToDo() {
-  todosInProgress.value[ToDo_Index_ForEditing.value] = ToDo_Text_ForEditing.value
+  toDosInProgress.value[toDoIndexForEditing.value] = toDoTextForEditing.value
   isVisible.value = !isVisible.value
 }
 
 function completeToDo(index) {
-  todosCompleted.value.push(todosInProgress.value[index])
+  todosCompleted.value.push(toDosInProgress.value[index])
   removeToDo(index)
 }
 </script>
 
 <template>
-  <div class="mainToDo" v-if="isVisible">
-    <div class="input-section">
-      <input class="input-ToDo" v-model="newToDo" placeholder="Enter your ToDo" />
-      <button class="addToDo-button" @click="addToDo">Add ToDo</button>
+  <div>
+    <div v-if="isVisible" class="mainToDo">
+      <div class="inputSection">
+        <input v-model="newToDo" class="inputToDo" placeholder="Enter your ToDo" />
+        <button class="addToDo-button" @click="addToDo">Add ToDo</button>
+      </div>
+      <div>
+        <h1 class="toDoHeader">In Progress:</h1>
+        <ul>
+          <li v-for="(todo, index) in toDosInProgress" :key="index" class="toDoList">
+            <span>{{ todo }}</span>
+            <button class="toDoButton" @click="removeToDo(index)">Delete</button>
+            <button class="toDoButton" @click="editeToDo(index)">Edite</button>
+            <button class="toDoButton" @click="completeToDo(index)">Complete</button>
+          </li>
+        </ul>
+        <h1 class="toDoHeader">Completed:</h1>
+        <ul>
+          <li v-for="(todo, index) in todosCompleted" :key="index" class="toDoList">
+            {{ todo }}
+          </li>
+        </ul>
+      </div>
     </div>
-    <div>
-      <h1 class="ToDo-Header">In Progress:</h1>
-      <ul>
-        <li class="ToDoList" v-for="(todo, index) in todosInProgress" :key="index">
-          {{ todo }}
-          <button class="ToDoButton" @click="removeToDo(index)">Delete</button>
-          <button class="ToDoButton" @click="editeToDo(index)">Edite</button>
-          <button class="ToDoButton" @click="completeToDo(index)">Complete</button>
-        </li>
-      </ul>
-      <h1 class="ToDo-Header">Completed:</h1>
-      <ul>
-        <li class="ToDoList" v-for="(todo, index) in todosCompleted" :key="index">
-          {{ todo }}
-        </li>
-      </ul>
+    <div v-if="!isVisible" class="editToDo">
+      <!-- <h1>{{ toDoTextForEditing }}</h1> -->
+      <textarea v-model="toDoTextForEditing"></textarea>
+      <button @click="saveToDo">Save</button>
+      <!-- <input v-model="newToDo" text="" /> -->
     </div>
-  </div>
-  <div class="editToDo" v-if="!isVisible">
-    <!-- <h1>{{ ToDo_Text_ForEditing }}</h1> -->
-    <textarea v-model="ToDo_Text_ForEditing"></textarea>
-    <button @click="saveToDo">Save</button>
-    <!-- <input v-model="newToDo" text="" /> -->
   </div>
 </template>
 
-<style>
-.ToDoList {
+<style scoped>
+.toDoList {
   color: rgb(255, 255, 255);
 }
 
-.ToDo-Header {
+.toDoHeader {
   margin-left: 8px;
   margin-top: 8px;
   margin-right: 8px;
@@ -90,13 +92,13 @@ function completeToDo(index) {
   border-radius: 12px;
 }
 
-.input-section {
+.inputSection {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.input-ToDo {
+.inputToDo {
   margin-left: 8px;
   margin-top: 8px;
   margin-right: 8px;
@@ -133,7 +135,7 @@ function completeToDo(index) {
     sans-serif;
 }
 
-.ToDoButton {
+.toDoButton {
   margin-left: 2px;
   margin-right: 2px;
   border-radius: 12px;
