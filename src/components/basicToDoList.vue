@@ -1,7 +1,18 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import EventService from '@/services/EventService'
+const toDosInProgress = ref(null)
 
-const toDosInProgress = ref([])
+onMounted(() => {
+  EventService.getEvents()
+    .then((response) => {
+      toDosInProgress.value = response.data
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+})
+
 const todosCompleted = ref([])
 const newToDo = ref('')
 const toDoIndexForEditing = ref(0) //Do I really need this?
