@@ -1,47 +1,32 @@
 <script setup>
-import { onMounted, ref } from 'vue'
-import EventService from '@/services/EventService'
+import { ref } from 'vue'
+import { useTodoListStore } from '@/stores/toDoList'
+import { storeToRefs } from 'pinia'
 const toDosInProgress = ref(null)
 
-onMounted(() => {
-  EventService.getEvents()
-    .then((response) => {
-      toDosInProgress.value = response.data
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-})
+const store = useTodoListStore()
+const { todoList } = storeToRefs(store)
+const { completeToDo } = store
+
+const newToDo = ref('')
+
+function addToDoAndClearInput(item) {
+  if (item.length === 0) {
+    return
+  }
+  store.addToDo(item)
+  newToDo.value = ''
+  console.log(todoList.item)
+}
 
 const todosCompleted = ref([])
-const newToDo = ref('')
 const toDoIndexForEditing = ref(0) //Do I really need this?
 const toDoTextForEditing = ref('')
 const isVisible = ref(true)
 
-function addToDo() {
-  toDosInProgress.value.push(newToDo.value)
-  newToDo.value = ''
-}
-
-function removeToDo(index) {
-  toDosInProgress.value.splice(index, 1)
-}
-
-function editeToDo(index) {
-  isVisible.value = !isVisible.value
-  toDoIndexForEditing.value = index
-  toDoTextForEditing.value = toDosInProgress.value.at(toDoIndexForEditing.value)
-}
-
 function saveToDo() {
   toDosInProgress.value[toDoIndexForEditing.value] = toDoTextForEditing.value
   isVisible.value = !isVisible.value
-}
-
-function completeToDo(index) {
-  todosCompleted.value.push(toDosInProgress.value[index])
-  removeToDo(index)
 }
 </script>
 
@@ -50,18 +35,16 @@ function completeToDo(index) {
     <div v-if="isVisible" class="mainToDo">
       <div class="inputSection">
         <input v-model="newToDo" class="inputToDo" placeholder="Enter your ToDo" />
-        <button class="addToDo-button" @click="addToDo">Add ToDo</button>
+        <button class="addToDo-button" @click="addToDoAndClearInput(newToDo)">Add ToDo</button>
       </div>
       <div>
         <h1 class="toDoHeader">In Progress:</h1>
-        <ul>
-          <li v-for="(todo, index) in toDosInProgress" :key="index" class="toDoList">
-            <span>{{ todo }}</span>
-            <button class="toDoButton" @click="removeToDo(index)">Delete</button>
-            <button class="toDoButton" @click="editeToDo(index)">Edite</button>
-            <button class="toDoButton" @click="completeToDo(index)">Complete</button>
-          </li>
-        </ul>
+        <div v-for="todo in todoList" :key="todo.id" class="toDoList">
+          <div class="content">
+            <span :class="{ completed: todo.completed }">{{ todo.item }}</span>
+            <span @click.stop="completeToDo(todo.id)">&#10004;</span>
+          </div>
+        </div>
         <h1 class="toDoHeader">Completed:</h1>
         <ul>
           <li v-for="(todo, index) in todosCompleted" :key="index" class="toDoList">
@@ -80,6 +63,10 @@ function completeToDo(index) {
 </template>
 
 <style scoped>
+.completed {
+  text-decoration: line-through;
+}
+
 .toDoList {
   color: rgb(255, 255, 255);
 }
