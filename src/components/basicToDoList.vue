@@ -6,7 +6,7 @@ const toDosInProgress = ref(null)
 
 const store = useTodoListStore()
 const { todoList } = storeToRefs(store)
-const { completeToDo } = store
+const { completeToDo, deleteToDo } = store
 
 const newToDo = ref('')
 
@@ -42,7 +42,10 @@ function saveToDo() {
         <div v-for="todo in todoList" :key="todo.id" class="toDoList">
           <div class="content">
             <span :class="{ completed: todo.completed }">{{ todo.item }}</span>
-            <span @click.stop="completeToDo(todo.id)">&#10004;</span>
+            <div>
+              <span @click.stop="completeToDo(todo.id)">&#10004;</span>
+              <span @click="deleteToDo(todo.id)" class="x">&#10060;</span>
+            </div>
           </div>
         </div>
         <h1 class="toDoHeader">Completed:</h1>
